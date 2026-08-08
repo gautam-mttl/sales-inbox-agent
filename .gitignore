@@ -11,11 +11,6 @@ dist/
 build/
 .vite/
 
-# Database
-*.db
-*.db-journal
-prisma/*.db
-
 # Logs
 *.log
 
