@@ -126,9 +126,26 @@ export async function listTasks(filters: TaskFilters) {
   });
 }
 
-/** Delete a single task by its public task_id. */
+/** Delete a single task by its public task_id.
+ *
+ * Must also delete the ThreadTaskMap entry first because the FK on
+ * thread_task_map.task_id is RESTRICT — Prisma will refuse the delete otherwise.
+ * Both deletes run in a transaction so they are atomic.
+ */
 export async function deleteTask(task_id: string) {
-  return prisma.task.delete({ where: { task_id } });
+  return prisma.$transaction(async (tx) => {
+    // Remove thread mapping if one exists (may not for tasks created without ingest)
+    await tx.threadTaskMap.deleteMany({ where: { task_id } });
+    // Remove task update history
+    await tx.taskUpdate.deleteMany({ where: { task_id } });
+    // Remove processed email links (set task_id to null rather than deleting the audit row)
+    await tx.processedEmail.updateMany({
+      where: { task_id },
+      data: { task_id: null },
+    });
+    // Finally delete the task — all FK constraints are now satisfied
+    return tx.task.delete({ where: { task_id } });
+  });
 }
 
 /** Check whether a task already exists for a given (candidate_id, source_email_id). */

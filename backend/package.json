@@ -13,7 +13,8 @@
     "db:migrate:deploy": "dotenv -e ../.env -- prisma migrate deploy",
     "db:push": "dotenv -e ../.env -- prisma db push",
     "db:studio": "dotenv -e ../.env -- prisma studio",
-    "test:db": "tsx --env-file=../.env scripts/test-db.ts"
+    "test:db": "tsx --env-file=../.env scripts/test-db.ts",
+    "test:tasks": "tsx --env-file=../.env scripts/test-tasks.ts"
   },
   "dependencies": {
     "@paralleldrive/cuid2": "^3.3.0",
