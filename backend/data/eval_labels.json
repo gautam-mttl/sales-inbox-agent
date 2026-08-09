@@ -1,0 +1,402 @@
+[
+  {
+    "email_id": "email_1001",
+    "subject": "Let's team up",
+    "body": "<div style=\"font-family: Arial;\">Our agencies serve the same target market. Interested in a co-marketing campaign?</div>",
+    "expected_decision": "classify",
+    "expected_category": "marketing",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1002",
+    "subject": "Re: You won a prize!!!",
+    "body": "> Click here to claim your $1000 Amazon gift card.\n\nYes, please proceed.",
+    "expected_decision": "skip",
+    "expected_category": null,
+    "expected_skip_reason": "spam"
+  },
+  {
+    "email_id": "email_1003",
+    "subject": "Fwd: RFP for Enterprise CRM Implementation",
+    "body": "Please find attached our RFP for the new CRM rollout across 50 locations. The estimated budget is Rs. 1.2 Crore. Kindly respond by EOD Friday.\n\nSent from my iPhone",
+    "expected_decision": "classify",
+    "expected_category": "enterprise_rfp",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1006",
+    "subject": "Re: Hello",
+    "body": "> I am interested.\n\nYes, please proceed.",
+    "expected_decision": "classify",
+    "expected_category": "triage",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1007",
+    "subject": "Need a demo for my small agency",
+    "body": "Hi, I run a 5-person marketing agency and we need a tool to manage our clients. Can we get a demo?",
+    "expected_decision": "classify",
+    "expected_category": "smb_enquiry",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1008",
+    "subject": "Fwd: Let's team up",
+    "body": "Our agencies serve the same target market. Interested in a co-marketing campaign?\n\nSent from my iPhone",
+    "expected_decision": "classify",
+    "expected_category": "marketing",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1009",
+    "subject": "Pricing inquiry",
+    "body": "What's the cost for 10 users? We're a growing startup.",
+    "expected_decision": "classify",
+    "expected_category": "smb_enquiry",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1011",
+    "subject": "Automatic reply: Out of Office",
+    "body": "I am on leave until Monday.",
+    "expected_decision": "skip",
+    "expected_category": null,
+    "expected_skip_reason": "out_of_office"
+  },
+  {
+    "email_id": "email_1012",
+    "subject": "You won a prize!!!",
+    "body": "Click here to claim your $1000 Amazon gift card.",
+    "expected_decision": "skip",
+    "expected_category": null,
+    "expected_skip_reason": "spam"
+  },
+  {
+    "email_id": "email_1013",
+    "subject": "RFP for Enterprise CRM Implementation",
+    "body": "Please find attached our RFP for the new CRM rollout across 50 locations. The estimated budget is Rs. 1.2 Crore. Kindly respond by EOD Friday.",
+    "expected_decision": "classify",
+    "expected_category": "enterprise_rfp",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1015",
+    "subject": "Overdue Invoice #44921",
+    "body": "Your payment of $1,200 is 15 days past due. Please remit immediately.",
+    "expected_decision": "classify",
+    "expected_category": "finance",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1019",
+    "subject": "Re: Product Trial",
+    "body": "> We want to try your product for our local shop. Budget is tight, around 50k INR annually.\n\nYes, please proceed.",
+    "expected_decision": "classify",
+    "expected_category": "smb_enquiry",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1020",
+    "subject": "Out of office: Request for Proposal",
+    "body": "I am out of the office. Please forward the RFP to my colleague.",
+    "expected_decision": "skip",
+    "expected_category": null,
+    "expected_skip_reason": "out_of_office"
+  },
+  {
+    "email_id": "email_1021",
+    "subject": "Fwd: Hot singles in your area",
+    "body": "Click the link to chat now.\n\nSent from my iPhone",
+    "expected_decision": "skip",
+    "expected_category": null,
+    "expected_skip_reason": "spam"
+  },
+  {
+    "email_id": "email_1022",
+    "subject": "Re: Hot singles in your area",
+    "body": "> Click the link to chat now.\n\nYes, please proceed.",
+    "expected_decision": "skip",
+    "expected_category": null,
+    "expected_skip_reason": "spam"
+  },
+  {
+    "email_id": "email_1023",
+    "subject": "RFI - Data Analytics Platform",
+    "body": "Looking for an enterprise-grade analytics solution. We have 10,000+ employees. What is your enterprise prizeing model? Budget ~ $150k.",
+    "expected_decision": "classify",
+    "expected_category": "enterprise_rfp",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1025",
+    "subject": "Tax details required",
+    "body": "<div style=\"font-family: Arial;\">Please share your GSTIN for the vendor onboarding process.</div>",
+    "expected_decision": "classify",
+    "expected_category": "finance",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1026",
+    "subject": "Automatic reply: Out of Office",
+    "body": "I am on leave until Monday.",
+    "expected_decision": "skip",
+    "expected_category": null,
+    "expected_skip_reason": "out_of_office"
+  },
+  {
+    "email_id": "email_1028",
+    "subject": "Synergy Call",
+    "body": "<div style=\"font-family: Arial;\">I think there's strong synergy between our platforms. Let's schedule a call to discuss API integration.</div>",
+    "expected_decision": "classify",
+    "expected_category": "alliances",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1029",
+    "subject": "Team sponsorship",
+    "body": "Would your company be interested in sponsoring our local cricket team?",
+    "expected_decision": "classify",
+    "expected_category": "marketing",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1031",
+    "subject": "RFI - Data Analytics Platform",
+    "body": "Looking for an enterprise-grade analytics solution. We have 10,000+ employees. What is your enterprise pricing model? Budget ~ $150k.",
+    "expected_decision": "classify",
+    "expected_category": "enterprise_rfp",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1034",
+    "subject": "Synergy Call",
+    "body": "I think there's strong synergy between our platforms. Let's schedule a call to discuss API integration.",
+    "expected_decision": "classify",
+    "expected_category": "alliances",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1035",
+    "subject": "Re: Overdue Invoice #44921",
+    "body": "> Your payment of $1,200 is 15 days past due. Please remit immediately.\n\nYes, please proceed.",
+    "expected_decision": "classify",
+    "expected_category": "finance",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1039",
+    "subject": "Sponsor our annual tech fest",
+    "body": "We are hosting an event for 5000 students. Platinum sponsorship is 5 Lakhs INR. Bhai, deal fix karte hain. Please send details.",
+    "expected_decision": "classify",
+    "expected_category": "marketing",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1040",
+    "subject": "RFI - Data Analytics Platform",
+    "body": "Looking for an enterprise-grade analytics solution. We have 10,000+ employees. What is your enterprise pricing model? Budget ~ $150k.",
+    "expected_decision": "classify",
+    "expected_category": "enterprise_rfp",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1041",
+    "subject": "Donate to our NGO",
+    "body": "Please support our cause. We are looking for corporate sponsors.",
+    "expected_decision": "classify",
+    "expected_category": "marketing",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1042",
+    "subject": "Product Trial",
+    "body": "We want to try your product for our local shop. Budget is tight, around 50k INR annually.",
+    "expected_decision": "classify",
+    "expected_category": "smb_enquiry",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1048",
+    "subject": "RFI - Data Analytics Platform",
+    "body": "Looking for an enterprise-grade analytics solution. We have 10,000+ employees. What is your enterprise pricing model? Budget ~ $150k.",
+    "expected_decision": "classify",
+    "expected_category": "enterprise_rfp",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1050",
+    "subject": "Weekly Marketing Newsletter: Q3 Trends",
+    "body": "View in browser\n\nHere are the top marketing trends for Q3. Unsubscribe here.",
+    "expected_decision": "skip",
+    "expected_category": null,
+    "expected_skip_reason": "newsletter"
+  },
+  {
+    "email_id": "email_1053",
+    "subject": "Partnership Opportunity",
+    "body": "We have a complementary product and would love to discuss a reseller partnership. Bhai, deal fix karte hain. Please send details.",
+    "expected_decision": "classify",
+    "expected_category": "alliances",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1056",
+    "subject": "Need a demo for my small agency",
+    "body": "Hi, I run a 5-person marketing agency and we need a tool to manage our clients. Can we get a demo?",
+    "expected_decision": "classify",
+    "expected_category": "smb_enquiry",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1058",
+    "subject": "Hot singles in your area",
+    "body": "Click the link to chat now.",
+    "expected_decision": "skip",
+    "expected_category": null,
+    "expected_skip_reason": "spam"
+  },
+  {
+    "email_id": "email_1061",
+    "subject": "Buy cheap meds",
+    "body": "Discounted pharmacy online. No prescription needed.",
+    "expected_decision": "skip",
+    "expected_category": null,
+    "expected_skip_reason": "spam"
+  },
+  {
+    "email_id": "email_1063",
+    "subject": "Partnership Opportunity",
+    "body": "We have a complementary product and would love to discuss a reseller partnership.",
+    "expected_decision": "classify",
+    "expected_category": "alliances",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1065",
+    "subject": "Hello",
+    "body": "I am interested.",
+    "expected_decision": "classify",
+    "expected_category": "triage",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1066",
+    "subject": "Fwd: Overdue Invoice #44921",
+    "body": "Your payment of $1,200 is 15 days past due. Please remit immediately.\n\nSent from my iPhone",
+    "expected_decision": "classify",
+    "expected_category": "finance",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1067",
+    "subject": "Need help",
+    "body": "Can you tell me more about your company?",
+    "expected_decision": "classify",
+    "expected_category": "triage",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1070",
+    "subject": "Team sponsorship",
+    "body": "<div style=\"font-family: Arial;\">Would your company be interested in sponsoring our local cricket team?</div>",
+    "expected_decision": "classify",
+    "expected_category": "marketing",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1073",
+    "subject": "Webinar: Future of AI",
+    "body": "Join us this Thursday to learn about AI in sales.",
+    "expected_decision": "classify",
+    "expected_category": "marketing",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1075",
+    "subject": "Team sponsorship",
+    "body": "Would your company be interested in sponsoring our local cricket team?",
+    "expected_decision": "classify",
+    "expected_category": "marketing",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1077",
+    "subject": "Tax details required",
+    "body": "Please share your GSTIN for the vendor onboarding process.",
+    "expected_decision": "classify",
+    "expected_category": "finance",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1079",
+    "subject": "Re: Need help",
+    "body": "> Can you tell me more about your company?\n\nYes, please proceed.",
+    "expected_decision": "classify",
+    "expected_category": "triage",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1086",
+    "subject": "Fwd: Payment confirmation",
+    "body": "We have received your payment for the annual subscription.\n\nSent from my iPhone",
+    "expected_decision": "classify",
+    "expected_category": "finance",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1087",
+    "subject": "Webinar: Future of AI",
+    "body": "Join us this Thursday to learn about AI in sales.",
+    "expected_decision": "classify",
+    "expected_category": "marketing",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1098",
+    "subject": "Urgent",
+    "body": "Please call me at 9876543210.",
+    "expected_decision": "classify",
+    "expected_category": "triage",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1099",
+    "subject": "Need help",
+    "body": "Can you tell me more about your company?",
+    "expected_decision": "classify",
+    "expected_category": "triage",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1100",
+    "subject": "Exclusive Lead Gen Strategies",
+    "body": "Download our free whitepaper on B2B lead generation!",
+    "expected_decision": "classify",
+    "expected_category": "marketing",
+    "expected_skip_reason": null
+  },
+  {
+    "email_id": "email_1120",
+    "subject": "Automatic reply: Out of Office",
+    "body": "I am on leave until Monday.",
+    "expected_decision": "skip",
+    "expected_category": null,
+    "expected_skip_reason": "out_of_office"
+  },
+  {
+    "email_id": "email_1123",
+    "subject": "Fwd: Boost your SEO by 300%",
+    "body": "Hi, I noticed your website is not ranking on page 1. We offer guaranteed SEO services.\n\nSent from my iPhone",
+    "expected_decision": "skip",
+    "expected_category": null,
+    "expected_skip_reason": "spam"
+  },
+  {
+    "email_id": "email_1128",
+    "subject": "Automatic reply: Out of Office",
+    "body": "I am on leave until Monday.",
+    "expected_decision": "skip",
+    "expected_category": null,
+    "expected_skip_reason": "out_of_office"
+  }
+]
