@@ -15,7 +15,7 @@ export interface StatsResponse {
   skipped: number;
   by_category: Record<string, number>;
   by_skip_reason: Record<string, number>;
-  runs: Array<{ run_id: string; processed_at: string; emails_processed: number }>;
+  runs: Array<{ run_id: string; started_at: string; total_input: number }>;
 }
 
 // Tasks

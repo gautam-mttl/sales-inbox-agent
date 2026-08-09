@@ -115,8 +115,8 @@ export function StatsView({ candidateId }: Props) {
             {stats.runs.map((run) => (
               <tr key={run.run_id} className="hover:bg-gray-50/50 transition-colors">
                 <td className="px-6 py-3 font-mono text-xs text-blue-600">{run.run_id}</td>
-                <td className="px-6 py-3 text-gray-500">{format(new Date(run.processed_at), "MMM d, yyyy HH:mm:ss")}</td>
-                <td className="px-6 py-3 text-right font-semibold text-gray-900">{run.emails_processed}</td>
+                <td className="px-6 py-3 text-gray-500">{format(new Date(run.started_at), "MMM d, yyyy HH:mm:ss")}</td>
+                <td className="px-6 py-3 text-right font-semibold text-gray-900">{run.total_input}</td>
               </tr>
             ))}
             {stats.runs.length === 0 && (

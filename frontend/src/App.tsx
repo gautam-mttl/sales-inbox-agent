@@ -17,7 +17,7 @@ const TABS: { id: Tab; label: string; icon: React.FC<any> }[] = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("ingest");
-  const [candidateId, setCandidateId] = useState<string>("default-candidate@example.com");
+  const [candidateId, setCandidateId] = useState<string>(import.meta.env.VITE_CANDIDATE_ID || "gautammittal0109@gmail.com");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
