@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Play, Database, FileJson, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
 import { apiPost, IngestRequest, IngestResponse } from "../api/client";
 
@@ -11,6 +11,17 @@ export function IngestionView({ candidateId }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<IngestResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (candidateId) {
+      const saved = localStorage.getItem(`sales_inbox_generated_emails_${candidateId}`);
+      if (saved) {
+        setJsonInput(saved);
+      } else {
+        setJsonInput("");
+      }
+    }
+  }, [candidateId]);
 
   let parsedEmails: any[] = [];
   try {
@@ -58,7 +69,11 @@ export function IngestionView({ candidateId }: Props) {
         is_reply: Math.random() > 0.8
       });
     }
-    setJsonInput(JSON.stringify({ emails }, null, 2));
+    const newJson = JSON.stringify({ emails }, null, 2);
+    setJsonInput(newJson);
+    if (candidateId) {
+      localStorage.setItem(`sales_inbox_generated_emails_${candidateId}`, newJson);
+    }
   };
 
   const handleIngest = async () => {
@@ -184,7 +199,17 @@ export function IngestionView({ candidateId }: Props) {
           </div>
           <textarea
             value={jsonInput}
-            onChange={(e) => setJsonInput(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value;
+              setJsonInput(val);
+              if (candidateId) {
+                if (val.trim()) {
+                  localStorage.setItem(`sales_inbox_generated_emails_${candidateId}`, val);
+                } else {
+                  localStorage.removeItem(`sales_inbox_generated_emails_${candidateId}`);
+                }
+              }
+            }}
             placeholder="Paste your inbox.json array here..."
             className="flex-1 p-4 w-full bg-slate-900 text-emerald-400 font-mono text-sm resize-none focus:outline-none"
             spellCheck={false}
