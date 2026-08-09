@@ -24,7 +24,7 @@ Expected decision and expected category were maintained separately in the ground
 | `spam` | 58.3% | 100.0% | 7 |
 | `triage` | 100.0% | 83.3% | 6 |
 
-## Genuine Unresolved Failure Cases
+## Failure Cases I Did Not Fix
 
 ### Failure #1: email_1006
 - **Subject**: Re: Hello

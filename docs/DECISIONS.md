@@ -85,11 +85,19 @@ Questions may refer specifically to the emails the user has just pasted or proce
 
 ## 8. Known Intentional Limitation
 
-**TO BE COMPLETED AFTER REAL EVALUATION.**
+**Gemini Malformed JSON Outputs**
 
-Document one genuine unresolved limitation here.
+### Context
+During testing, Gemini occasionally returned malformed JSON responses (e.g., adding markdown code fences around the JSON, appending trailing commas, or truncating the end of the JSON object entirely when hitting output limits).
 
-Do not fabricate one before testing.
+### Decision
+Rather than attempting complex regex heuristics to "repair" the malformed JSON or silently dropping the email from the ingestion batch, the pipeline strictly enforces `JSON.parse` wrapped in a `try/catch`. When parsing fails, the classifier intentionally catches the exception and degrades the email to `u_triage` with a low `confidence` score (0.3).
+
+### Reason
+This ensures the email is never permanently lost and the ingestion queue continues processing uninterrupted.
+
+### Tradeoff
+While this ensures reliability, it means some emails that Gemini successfully understood but failed to format correctly will require manual human triage. A future iteration should leverage native Gemini Structured Outputs to strictly enforce the JSON schema at the API layer.
 
 ## Decision Log
 
