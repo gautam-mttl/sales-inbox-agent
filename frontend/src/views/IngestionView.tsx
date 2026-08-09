@@ -87,9 +87,40 @@ export function IngestionView({ candidateId }: Props) {
     setIsLoading(true);
     setError(null);
     setResult(null);
+    
     try {
-      const res = await apiPost<IngestResponse>("/ingest", payload);
-      setResult(res);
+      const allEmails = payload.emails;
+      const CHUNK_SIZE = 100;
+      let combinedResult: IngestResponse = {
+        processed: 0,
+        tasks_created: 0,
+        tasks_updated: 0,
+        skipped: 0,
+        errors: [],
+        run_id: ""
+      };
+
+      for (let i = 0; i < allEmails.length; i += CHUNK_SIZE) {
+        const chunk = allEmails.slice(i, i + CHUNK_SIZE);
+        try {
+          const chunkPayload = {
+            candidate_id: payload.candidate_id,
+            emails: chunk
+          };
+          const res = await apiPost<IngestResponse>("/ingest", chunkPayload);
+          
+          combinedResult.processed += res.processed;
+          combinedResult.tasks_created += res.tasks_created;
+          combinedResult.tasks_updated += res.tasks_updated;
+          combinedResult.skipped += res.skipped;
+          combinedResult.errors.push(...res.errors);
+          if (!combinedResult.run_id) combinedResult.run_id = res.run_id;
+        } catch (err: any) {
+          throw new Error(`Chunk ${Math.floor(i / CHUNK_SIZE) + 1} failed: ${err.message}`);
+        }
+      }
+
+      setResult(combinedResult);
       setJsonInput(""); // Clear on success
     } catch (err: any) {
       setError(err.message || "Failed to ingest emails.");
