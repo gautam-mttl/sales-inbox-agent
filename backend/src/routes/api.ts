@@ -20,7 +20,11 @@ import {
   ApiStatsQuerySchema,
 } from "../validation/ingestSchemas";
 
+import chatRouter from "./chat";
+
 const router = Router();
+
+router.use("/chat", chatRouter);
 
 // ─── GET /api/tasks ───────────────────────────────────────────────────────────
 
