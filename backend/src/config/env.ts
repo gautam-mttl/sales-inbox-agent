@@ -25,6 +25,7 @@ function loadEnv() {
       console.error(`   ${issue.path.join(".")}: ${issue.message}`);
     }
     process.exit(1);
+    throw new Error("Invalid env");
   }
 
   return result.data;
