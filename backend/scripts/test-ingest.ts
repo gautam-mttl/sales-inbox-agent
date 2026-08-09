@@ -28,6 +28,47 @@
 import http from "http";
 import app from "../src/app";
 
+// ─── Stub Gemini to save quota ────────────────────────────────────────────────
+
+const originalFetch = global.fetch;
+global.fetch = async (url, options) => {
+  if (typeof url === "string" && url.includes("generativelanguage.googleapis.com")) {
+    const bodyStr = options?.body ? String(options.body) : "";
+    let fakeCategory = "triage";
+    let fakeAssignee = "u_triage";
+    
+    if (bodyStr.includes("Meridian Steel")) {
+      fakeCategory = "enterprise_rfp";
+      fakeAssignee = "u_aarti";
+    } else if (bodyStr.includes("demo sometime next week")) {
+      fakeCategory = "smb_enquiry";
+      fakeAssignee = "u_rohit";
+    } else if (bodyStr.includes("India SaaS Summit")) {
+      fakeCategory = "marketing";
+      fakeAssignee = "u_meera";
+    }
+    
+    return new Response(
+      JSON.stringify({
+        candidates: [{ content: { parts: [{ text: JSON.stringify({
+          action: "classify",
+          category: fakeCategory,
+          assignee_id: fakeAssignee,
+          priority: "medium",
+          due_date: null,
+          deal_value_inr: null,
+          company_name: null,
+          confidence: 0.95,
+          is_psu_or_govt_tender: false,
+          reasoning: "Mocked classifier reason"
+        }) }] } }],
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+  }
+  return originalFetch(url, options);
+};
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 let baseUrl = "";
@@ -181,7 +222,7 @@ async function runTests() {
     if (r.body.processed === 3) ok("processed === 3");
     else fail("Expected processed: 3", r.body);
 
-    if (r.body.tasks_created === 3) ok("tasks_created === 3 (stub routes all to triage)");
+    if (r.body.tasks_created === 3) ok("tasks_created === 3");
     else fail("Expected tasks_created: 3", r.body);
 
     if (r.body.tasks_updated === 0) ok("tasks_updated === 0");
@@ -338,10 +379,14 @@ async function runTests() {
     const r = await get(`/api/stats?candidate_id=${encodeURIComponent(CANDIDATE_ID)}`);
     if (r.body.by_category && typeof r.body.by_category === "object") {
       ok("by_category is present");
-      if (r.body.by_category["triage"] >= 3) {
-        ok(`by_category.triage: ${r.body.by_category["triage"]} (stub routes to triage)`);
+      if (
+        r.body.by_category["enterprise_rfp"] >= 1 &&
+        r.body.by_category["smb_enquiry"] >= 1 &&
+        r.body.by_category["marketing"] >= 1
+      ) {
+        ok("by_category contains enterprise_rfp, smb_enquiry, marketing");
       } else {
-        fail("Expected triage ≥ 3 in by_category", r.body.by_category);
+        fail("Expected diverse categories in by_category", r.body.by_category);
       }
     } else {
       fail("by_category missing", r.body);
@@ -391,10 +436,12 @@ async function runTests() {
     } else {
       fail("Expected ≥ 3 tasks in raw /tasks", r.body);
     }
-    // All stub-created tasks should be triage
-    const allTriage = r.body.tasks?.every((t: { category: string }) => t.category === "triage");
-    if (allTriage) ok("All tasks are category=triage (stub classifier working)");
-    else fail("Non-triage tasks from stub", r.body.tasks?.map((t: { task_id: string; category: string }) => ({ id: t.task_id, cat: t.category })));
+    const categories = r.body.tasks?.map((t: { category: string }) => t.category) || [];
+    if (categories.includes("enterprise_rfp") && categories.includes("smb_enquiry") && categories.includes("marketing")) {
+      ok("Tasks have correctly routed categories");
+    } else {
+      fail("Tasks missing expected categories", categories);
+    }
   }
 
   // 16. Cleanup
