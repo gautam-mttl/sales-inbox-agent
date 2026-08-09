@@ -55,16 +55,18 @@ function isWithin72Hours(
   return diffHours <= 72;
 }
 
-/** Return true if the email looks like a government/PSU tender. */
+/** Return true if the email looks like a government/PSU tender.
+ *
+ * Phase 5 classifier annotates reasoning with "[PSU/GOV]" prefix when
+ * is_psu_or_govt_tender = true. We also keep keyword fallback for resilience.
+ */
 function isPsuOrGovTender(classification: ClassifyDecision): boolean {
-  return (
-    classification.category === "enterprise_rfp" &&
-    classification.reasoning !== undefined &&
-    // Phase 5 Gemini will flag PSU tenders explicitly; in Phase 4 stub this
-    // will always be false. The pattern is here for when Phase 5 sets reasoning.
-    /\b(?:PSU|government|govt|public\s+sector|bharat|bhel|ntpc|ongc|bpcl|hpcl|iocl|sail|gail|ril|nhai|nhmfc|tender\s+notice)\b/i.test(
-      classification.reasoning
-    )
+  if (!classification.reasoning) return false;
+  // Phase 5 primary signal: [PSU/GOV] prefix added by classifier
+  if (/^\[PSU\/GOV\]/i.test(classification.reasoning)) return true;
+  // Keyword fallback (catches cases where prefix may be missing)
+  return /\b(?:PSU|government\s+tender|govt\s+tender|public\s+sector\s+(?:tender|unit)|bhel|ntpc|ongc|bpcl|hpcl|iocl|sail|gail|nhai|nhmfc|tender\s+notice\s+no\.?)\b/i.test(
+    classification.reasoning
   );
 }
 

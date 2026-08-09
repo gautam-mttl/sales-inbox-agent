@@ -15,9 +15,12 @@
     "db:studio": "dotenv -e ../.env -- prisma studio",
     "test:db": "tsx --env-file=../.env scripts/test-db.ts",
     "test:tasks": "tsx --env-file=../.env scripts/test-tasks.ts",
-    "test:ingest": "tsx --env-file=../.env scripts/test-ingest.ts"
+    "test:ingest": "tsx --env-file=../.env scripts/test-ingest.ts",
+    "test:classify": "tsx --env-file=../.env scripts/test-classify.ts"
   },
   "dependencies": {
+    "@google/genai": "^2.16.0",
+    "@google/generative-ai": "^0.24.1",
     "@paralleldrive/cuid2": "^3.3.0",
     "@prisma/client": "^5.22.0",
     "cors": "^2.8.5",

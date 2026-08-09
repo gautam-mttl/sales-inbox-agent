@@ -12,6 +12,7 @@ const envSchema = z.object({
     .min(1, "CANDIDATE_ID is required"),
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
   GEMINI_API_KEY: z.string().min(1, "GEMINI_API_KEY is required"),
+  GEMINI_MODEL: z.string().default("gemini-3.5-flash-lite"),
   FRONTEND_URL: z.string().url("FRONTEND_URL must be a valid URL"),
 });
 
