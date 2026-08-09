@@ -60,7 +60,7 @@ Use bounded retries with exponential backoff and jitter for transient failures.
 Gemini may encounter rate limits, timeouts, or malformed responses.
 
 ### Fallback
-Finalize after implementation and testing.
+Transient errors (e.g., HTTP 429/503) are mitigated using a bounded retry wrapper with exponential backoff and jitter. Malformed JSON parsing exceptions are caught safely by the classifier and gracefully degraded to `u_triage` without crashing the ingestion loop.
 
 ## 6. Quoted Replies
 
@@ -70,7 +70,7 @@ Prioritize the current/top-level message during thread reconciliation.
 Quoted and forwarded historical content must not overwrite current information.
 
 ### Implementation
-Finalize after testing.
+Thread reconciliation is handled via the `thread_task_map`. The most recent/top-level message content is explicitly prioritized, while any quoted or forwarded historical content is treated separately so that it does not overwrite current, actionable data in existing tickets.
 
 ### Known Limitation
 Email quote formatting varies between clients and cannot always be identified perfectly.

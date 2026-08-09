@@ -13,7 +13,7 @@ Expected decision and expected category were maintained separately in the ground
 
 ### Precision and Recall
 | Label | Precision | Recall | Support |
-|---|---|---|---|
+|---|---:|---:|---:|
 | `alliances` | 100.0% | 100.0% | 4 |
 | `enterprise_rfp` | 100.0% | 100.0% | 6 |
 | `finance` | 100.0% | 66.7% | 6 |
