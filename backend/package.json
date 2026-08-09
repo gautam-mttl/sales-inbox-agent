@@ -16,7 +16,8 @@
     "test:db": "tsx --env-file=../.env scripts/test-db.ts",
     "test:tasks": "tsx --env-file=../.env scripts/test-tasks.ts",
     "test:ingest": "tsx --env-file=../.env scripts/test-ingest.ts",
-    "test:classify": "tsx --env-file=../.env scripts/test-classify.ts"
+    "test:classify": "tsx --env-file=../.env scripts/test-classify.ts",
+    "test:phase6": "tsx --env-file=../.env scripts/test-phase6.ts"
   },
   "dependencies": {
     "@google/genai": "^2.16.0",
