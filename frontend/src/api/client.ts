@@ -114,11 +114,12 @@ export async function apiGet<T>(endpoint: string, params: Record<string, string>
   return response.json();
 }
 
-export async function apiPost<T>(endpoint: string, body: any): Promise<T> {
+export async function apiPost<T>(endpoint: string, body: any, signal?: AbortSignal): Promise<T> {
   const response = await fetch(API_BASE + endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+    signal,
   });
   if (!response.ok) {
     let err = `HTTP ${response.status}`;

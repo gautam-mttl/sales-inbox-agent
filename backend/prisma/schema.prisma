@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,9 +7,126 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Enums — exact values from the challenge spec §5.2
-// ─────────────────────────────────────────────────────────────────────────────
+model ProcessingRun {
+  id               String           @id @default(cuid())
+  candidate_id     String
+  started_at       DateTime         @default(now())
+  finished_at      DateTime?
+  total_input      Int              @default(0)
+  tasks_created    Int              @default(0)
+  tasks_updated    Int              @default(0)
+  skipped          Int              @default(0)
+  errored          Int              @default(0)
+  processed_emails ProcessedEmail[]
+
+  @@index([candidate_id])
+  @@map("processing_runs")
+}
+
+model Task {
+  id               String           @id @default(cuid())
+  task_id          String           @unique
+  candidate_id     String
+  source_email_id  String
+  thread_id        String
+  title            String
+  description      String?
+  assignee_id      AssigneeId
+  category         Category
+  priority         Priority
+  due_date         String?
+  deal_value_inr   Int?
+  company_name     String?
+  confidence       Float
+  created_at       DateTime         @default(now())
+  updated_at       DateTime         @updatedAt
+  processed_emails ProcessedEmail[]
+  updates          TaskUpdate[]
+  thread_map       ThreadTaskMap?
+
+  @@unique([candidate_id, source_email_id])
+  @@index([candidate_id])
+  @@index([candidate_id, thread_id])
+  @@index([candidate_id, assignee_id])
+  @@map("tasks")
+}
+
+model ThreadTaskMap {
+  id           String   @id @default(cuid())
+  candidate_id String
+  thread_id    String
+  task_id      String   @unique
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  task         Task     @relation(fields: [task_id], references: [task_id])
+
+  @@unique([candidate_id, thread_id])
+  @@index([candidate_id])
+  @@map("thread_task_map")
+}
+
+model ProcessedEmail {
+  id              String        @id @default(cuid())
+  candidate_id    String
+  source_email_id String
+  thread_id       String
+  from_name       String?
+  from_email      String?
+  subject         String?
+  received_at     DateTime?
+  is_reply        Boolean       @default(false)
+  raw_body        String?
+  decision        EmailDecision
+  category        Category?
+  assignee_id     AssigneeId?
+  priority        Priority?
+  due_date        String?
+  deal_value_inr  Int?
+  company_name    String?
+  confidence      Float?
+  reasoning       String?
+  skip_reason     SkipReason?
+  error_message   String?
+  task_id         String?
+  run_id          String
+  created_at      DateTime      @default(now())
+  run             ProcessingRun @relation(fields: [run_id], references: [id])
+  task            Task?         @relation(fields: [task_id], references: [task_id])
+
+  @@unique([candidate_id, source_email_id])
+  @@index([candidate_id])
+  @@index([candidate_id, thread_id])
+  @@index([candidate_id, decision])
+  @@index([candidate_id, category])
+  @@index([run_id])
+  @@map("processed_emails")
+}
+
+model TaskUpdate {
+  id                  String      @id @default(cuid())
+  task_id             String
+  candidate_id        String
+  source_email_id     String
+  thread_id           String
+  prev_priority       Priority?
+  new_priority        Priority?
+  prev_due_date       String?
+  new_due_date        String?
+  prev_deal_value_inr Int?
+  new_deal_value_inr  Int?
+  prev_assignee_id    AssigneeId?
+  new_assignee_id     AssigneeId?
+  prev_confidence     Float?
+  new_confidence      Float?
+  prev_company_name   String?
+  new_company_name    String?
+  created_at          DateTime    @default(now())
+  task                Task        @relation(fields: [task_id], references: [task_id])
+
+  @@index([task_id])
+  @@index([candidate_id, thread_id])
+  @@map("task_updates")
+}
 
 enum AssigneeId {
   u_aarti
@@ -38,196 +152,15 @@ enum Priority {
   low
 }
 
-// Decision stored in ProcessedEmail
 enum EmailDecision {
-  created  // new task was created
-  updated  // existing task was patched
-  skipped  // no task — OOO, newsletter, or spam
-  errored  // Gemini/processing failure, handled gracefully
+  created
+  updated
+  skipped
+  errored
 }
 
 enum SkipReason {
   out_of_office
   newsletter
   spam
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ProcessingRun — one record per POST /ingest call
-// ─────────────────────────────────────────────────────────────────────────────
-
-model ProcessingRun {
-  id            String    @id @default(cuid())
-  candidate_id  String
-  started_at    DateTime  @default(now())
-  finished_at   DateTime?
-
-  // Summary counters — set when the run finishes
-  total_input   Int  @default(0)
-  tasks_created Int  @default(0)
-  tasks_updated Int  @default(0)
-  skipped       Int  @default(0)
-  errored       Int  @default(0)
-
-  // Relations
-  processed_emails ProcessedEmail[]
-
-  @@index([candidate_id])
-  @@map("processing_runs")
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Task — backing store for the grader-facing Task API (§5)
-// Field names match the spec payload exactly.
-// ─────────────────────────────────────────────────────────────────────────────
-
-model Task {
-  // Internal surrogate PK (Prisma requires a single @id)
-  id              String     @id @default(cuid())
-
-  // Public-facing task ID — tsk_ prefix set in application code before insert
-  task_id         String     @unique
-
-  candidate_id    String
-  source_email_id String
-  thread_id       String
-
-  title           String
-  description     String?
-  assignee_id     AssigneeId
-  category        Category
-  priority        Priority
-  due_date        String?        // YYYY-MM-DD string per spec; nullable = not stated
-  deal_value_inr  Int?           // null = not stated or not a deal value
-  company_name    String?        // null = not determinable
-  confidence      Float
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  // Relations
-  thread_map       ThreadTaskMap?
-  updates          TaskUpdate[]
-  processed_emails ProcessedEmail[]
-
-  // Idempotency: one task per (candidate, email)
-  @@unique([candidate_id, source_email_id])
-  @@index([candidate_id])
-  @@index([candidate_id, thread_id])
-  @@index([candidate_id, assignee_id])
-  @@map("tasks")
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ThreadTaskMap — resolves (candidate_id, thread_id) → task_id
-// The UNIQUE constraint on (candidate_id, thread_id) ensures one task per thread.
-// ─────────────────────────────────────────────────────────────────────────────
-
-model ThreadTaskMap {
-  id           String @id @default(cuid())
-  candidate_id String
-  thread_id    String
-  task_id      String @unique  // FK → Task.task_id (public ID)
-
-  task       Task     @relation(fields: [task_id], references: [task_id])
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  @@unique([candidate_id, thread_id])
-  @@index([candidate_id])
-  @@map("thread_task_map")
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ProcessedEmail — audit record for every email we touch
-// Includes skipped emails (which never become Task rows).
-// Required for: grounded chat, statistics, reasoning display, evaluation.
-// ─────────────────────────────────────────────────────────────────────────────
-
-model ProcessedEmail {
-  id              String @id @default(cuid())
-  candidate_id    String
-  source_email_id String
-
-  // Source email fields (stored for table display and chat context)
-  thread_id  String
-  from_name  String?
-  from_email String?
-  subject    String?
-  received_at DateTime?
-  is_reply   Boolean   @default(false)
-  raw_body   String?   // body text — may be truncated for storage efficiency
-
-  // Classification output (Gemini + deterministic rules result)
-  decision       EmailDecision
-  category       Category?
-  assignee_id    AssigneeId?
-  priority       Priority?
-  due_date       String?
-  deal_value_inr Int?
-  company_name   String?
-  confidence     Float?
-  reasoning      String?    // Gemini's stated reason — shown in triage display; grounded chat Q3
-
-  // Skip / error metadata
-  skip_reason   SkipReason?
-  error_message String?
-
-  // FK to the Task created/updated (null for skipped/errored)
-  task_id String?  // public task_id (tsk_…)
-
-  // FK to the processing run
-  run_id String
-
-  created_at DateTime @default(now())
-
-  // Relations
-  run  ProcessingRun @relation(fields: [run_id], references: [id])
-  task Task?         @relation(fields: [task_id], references: [task_id])
-
-  // Idempotency constraint — THE critical uniqueness rule
-  @@unique([candidate_id, source_email_id])
-
-  @@index([candidate_id])
-  @@index([candidate_id, thread_id])
-  @@index([candidate_id, decision])
-  @@index([candidate_id, category])
-  @@index([run_id])
-  @@map("processed_emails")
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// TaskUpdate — immutable change record written on every PATCH /tasks/:id
-// Required for chat Q10: "did any thread get updated more than once?"
-// ─────────────────────────────────────────────────────────────────────────────
-
-model TaskUpdate {
-  id              String @id @default(cuid())
-  task_id         String // public task_id (tsk_…)
-  candidate_id    String
-  source_email_id String // the reply email that triggered this update
-  thread_id       String
-
-  // Snapshot of changed fields — null means that field did not change in this update
-  prev_priority       Priority?
-  new_priority        Priority?
-  prev_due_date       String?
-  new_due_date        String?
-  prev_deal_value_inr Int?
-  new_deal_value_inr  Int?
-  prev_assignee_id    AssigneeId?
-  new_assignee_id     AssigneeId?
-  prev_confidence     Float?
-  new_confidence      Float?
-  prev_company_name   String?
-  new_company_name    String?
-
-  created_at DateTime @default(now())
-
-  // Relations
-  task Task @relation(fields: [task_id], references: [task_id])
-
-  @@index([task_id])
-  @@index([candidate_id, thread_id])
-  @@map("task_updates")
 }

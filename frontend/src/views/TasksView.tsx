@@ -27,7 +27,7 @@ export function TasksView({ candidateId }: Props) {
       if (decision) query.decision = decision;
       if (category) query.category = category;
       
-      const res: any = await apiGet("/tasks", query);
+      const res: any = await apiGet("/api/tasks", query);
       setTasks(res.items || res.tasks || []);
       setTotal(res.total || 0);
     } catch (e) {

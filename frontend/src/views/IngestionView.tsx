@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Play, Database, FileJson, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
 import { apiPost, IngestRequest, IngestResponse } from "../api/client";
 
@@ -11,6 +11,15 @@ export function IngestionView({ candidateId }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<IngestResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (candidateId) {
@@ -103,6 +112,9 @@ export function IngestionView({ candidateId }: Props) {
     setError(null);
     setResult(null);
     
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+    
     try {
       const allEmails = payload.emails;
       const CHUNK_SIZE = 100;
@@ -116,13 +128,14 @@ export function IngestionView({ candidateId }: Props) {
       };
 
       for (let i = 0; i < allEmails.length; i += CHUNK_SIZE) {
+        if (signal.aborted) return;
         const chunk = allEmails.slice(i, i + CHUNK_SIZE);
         try {
           const chunkPayload = {
             candidate_id: payload.candidate_id,
             emails: chunk
           };
-          const res = await apiPost<IngestResponse>("/ingest", chunkPayload);
+          const res = await apiPost<IngestResponse>("/ingest", chunkPayload, signal);
           
           combinedResult.processed += res.processed;
           combinedResult.tasks_created += res.tasks_created;
@@ -131,6 +144,7 @@ export function IngestionView({ candidateId }: Props) {
           combinedResult.errors.push(...res.errors);
           if (!combinedResult.run_id) combinedResult.run_id = res.run_id;
         } catch (err: any) {
+          if (err.name === "AbortError" || signal.aborted) return;
           throw new Error(`Chunk ${Math.floor(i / CHUNK_SIZE) + 1} failed: ${err.message}`);
         }
       }
@@ -138,6 +152,7 @@ export function IngestionView({ candidateId }: Props) {
       setResult(combinedResult);
       setJsonInput(""); // Clear on success
     } catch (err: any) {
+      if (err.name === "AbortError" || abortControllerRef.current?.signal.aborted) return;
       setError(err.message || "Failed to ingest emails.");
     } finally {
       setIsLoading(false);

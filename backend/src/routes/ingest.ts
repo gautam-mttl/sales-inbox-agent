@@ -49,8 +49,17 @@ router.post(
     };
     const errors: Array<{ email_id: string; error: string }> = [];
 
+    let isClientDisconnected = false;
+    req.on("close", () => {
+      isClientDisconnected = true;
+    });
+
     // Process emails sequentially — must not parallelise (see module JSDoc)
     for (const email of emails) {
+      if (isClientDisconnected) {
+        console.warn(`[Ingestion] Client disconnected. Aborting chunk processing for run ${run.id}.`);
+        break;
+      }
       try {
         const result = await processEmail(email, candidate_id, run.id);
 
